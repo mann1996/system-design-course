@@ -1,0 +1,357 @@
+{
+  "curriculumTitle": "Advanced System Design & Distributed Architecture",
+  "modules": [
+    {
+      "id": "module-1",
+      "number": 1,
+      "title": "Distributed Foundations & Compute Scaling",
+      "badge": "Module 1: Foundations & Compute",
+      "description": "Establish estimation discipline, capacity sizing, and scale stateless compute layers horizontally behind load balancers.",
+      "lessons": [
+        {
+          "id": "0001",
+          "filename": "0001-back-of-the-envelope-estimation.html",
+          "title": "The Architect's Filter: Back-of-the-Envelope Estimation",
+          "navTitle": "Back-of-the-Envelope Estimation",
+          "badge": "Lesson 0001",
+          "time": "15 mins",
+          "tag": "Interactive Calc",
+          "summary": "Convert user behavior into QPS, spot AI architecture overkill, and calculate memory footprints before committing code."
+        },
+        {
+          "id": "0002",
+          "filename": "0002-horizontal-scaling-stateless-compute.html",
+          "title": "Scaling the Compute Layer: Horizontal Scaling & Statelessness",
+          "navTitle": "Horizontal Scaling & Stateless Compute",
+          "badge": "Lesson 0002",
+          "time": "15 mins",
+          "tag": "Cluster Sim",
+          "summary": "Overcome the Node.js single-thread bottleneck, avoid process memory traps, and externalize state to Redis."
+        }
+      ],
+      "milestone": {
+        "id": "milestone-1",
+        "number": 1,
+        "title": "Milestone 1 Practical Test: Tier-1 Ingestion Gateway & Peak Capacity Sizing",
+        "navTitle": "Milestone 1 Test",
+        "badge": "Milestone 1 Test",
+        "time": "30-45 mins",
+        "tag": "Practical Challenge",
+        "summary": "Design a high-throughput stateless API gateway, token authentication cluster, and Redis session layer for a flash-sale event with rigorous capacity sizing.",
+        "question": {
+          "scenario": "You are the Lead Systems Architect at 'TicketPulse', a ticketing platform hosting an exclusive flash-sale drop for a world stadium tour. The platform has 12,000,000 daily active users (DAU), but 70% of total daily traffic concentrates into a high-concurrency 15-minute ticket drop window. The ingress API receives user authentication and ticket reservation requests. Downstream order and database services will instantly collapse if traffic spikes pass through unmitigated. Your job is to architect the Tier-1 compute cluster, validate capacity math, terminate TLS, authenticate tokens statelessly, and apply rate limiting without process memory bloat.",
+          "trafficAndScale": [
+            "Daily Active Users (DAU): 12,000,000 users",
+            "Flash-sale Traffic: 70% of daily requests (8.4M requests) arrive in a 15-minute window (~9,333 QPS average, with peak surges hitting 60,000 QPS)",
+            "Request Payload: Average 2.5 KB (JSON metadata + Auth headers); Response Payload: Average 1.2 KB",
+            "Latency SLA: Ingress Gateway p99 latency < 50ms",
+            "Compute hardware profile: 4 vCPU, 8 GB RAM virtual machines running Node.js 20 LTS",
+            "Worker Capacity: Safe operational ceiling of 1,500 QPS per 4-vCPU compute instance at 65% target CPU utilization"
+          ],
+          "requirements": [
+            "Calculate network bandwidth, instance counts, and Redis memory footprints mathematically before proposing topology.",
+            "Ensure total statelessness across all compute nodes — any node can fail or restart without losing active user sessions.",
+            "Prevent cascading health-check outages and stampedes during auto-scaling events.",
+            "Provide an architecture defense explaining why process memory caching fails at this scale."
+          ],
+          "deliverables": [
+            {
+              "section": "1. Back-of-the-Envelope Capacity Sizing",
+              "description": "Show explicit step-by-step calculations for network, compute instances, and memory storage.",
+              "tasks": [
+                "Calculate peak ingress network bandwidth in Megabits/sec (Mbps) or Gigabits/sec (Gbps) at 60,000 peak QPS with 2.5 KB payload.",
+                "Calculate peak egress network bandwidth in Mbps/Gbps with 1.2 KB response payload.",
+                "Calculate the required number of 4-vCPU/8GB compute instances to comfortably handle 60,000 peak QPS with N+2 redundancy (assuming 1,500 QPS per node at 65% target CPU).",
+                "Size the Redis session storage cluster: 12,000,000 active sessions with 2-hour TTL, 250 bytes per session record (including Redis key overhead). Account for 30% operational headroom."
+              ]
+            },
+            {
+              "section": "2. Stateless Gateway Architecture & Topology",
+              "description": "Define the network boundaries, load balancing layers, and token verification mechanism.",
+              "tasks": [
+                "Design the end-to-end network flow from DNS Anycast -> L4 Load Balancer -> L7 API Gateway -> Clustered Compute Workers -> Shared Redis State.",
+                "Explain why L4 (e.g. AWS NLB / HAProxy TCP) is positioned in front of L7 (e.g. NGINX / Envoy / ALB) in this high-throughput architecture.",
+                "Evaluate Stateless JWT vs Opaque Token with Redis cache lookup: Which do you recommend for TicketPulse given that malicious bots must be revoked immediately if discovered during the drop?",
+                "Describe how Node.js processes utilize the Cluster module or container replicas to utilize all 4 vCPUs per instance without inter-process state sharing."
+              ]
+            },
+            {
+              "section": "3. Resilience, Graceful Shutdown & Failure Modes",
+              "description": "Anticipate real-world distributed system failure modes and engineer defensive guardrails.",
+              "tasks": [
+                "Design the health-check endpoint strategy (/healthz vs /live vs /ready): Explain how to avoid the 'cascading health-check failure' where heavy CPU load causes health checks to timeout, triggering the load balancer to kill healthy instances.",
+                "Detail the zero-downtime graceful shutdown procedure when SIGTERM is received during scale-down (connection draining, HTTP keep-alive termination, in-flight request completion)."
+              ]
+            }
+          ],
+          "evaluationCriteria": [
+            "Mathematical precision: Calculations correctly apply metric units (bits vs bytes, seconds to minutes) and include realistic headroom.",
+            "Stateless rigor: Zero sticky sessions, zero in-memory session maps in Node.js processes.",
+            "Failure boundary awareness: Prevents cascading thundering herds, provides connection draining, and isolates slow downstream dependencies.",
+            "Trade-off clarity: Explicit reasoning for L4 vs L7, and token revocation tradeoffs."
+          ]
+        },
+        "customPrompt": "I have completed the practical test for Milestone 1: Tier-1 Ingestion Gateway & Peak Capacity Sizing.\n\nHere is my architectural solution:\n[INSERT YOUR ARCHITECTURAL SOLUTION HERE]\n\nPlease review my solution against the Milestone 1 rubric and provide a structured critique covering:\n1. 🎯 Executive Verdict & Grade (Senior Architect Grade / Pass / Revisions Needed)\n2. ✅ What is Good (Strengths in calculations, stateless topology, and failure isolation)\n3. ❌ What is Wrong / Risky (Sizing flaws, single points of failure, missing defenses, or anti-patterns)\n4. 💡 What Can Be Improved (Production optimizations, observability metrics, and enterprise resiliency patterns)"
+      }
+    },
+    {
+      "id": "module-2",
+      "number": 2,
+      "title": "Distributed State, Caching & Persistence",
+      "badge": "Module 2: Distributed State & Data",
+      "description": "Protect persistent stores with distributed caching, scale read capacity with replicas, and scale write throughput with horizontal sharding.",
+      "lessons": [
+        {
+          "id": "0003",
+          "filename": "0003-caching-strategies-invalidation.html",
+          "title": "Caching Strategies & Distributed Invalidation",
+          "navTitle": "Caching Strategies & Invalidation",
+          "badge": "Lesson 0003",
+          "time": "15 mins",
+          "tag": "Interactive Sim",
+          "summary": "Protect databases from collapse, Cache-Aside vs Write-Through, avoid cache stampedes with Single-Flight locks, and eviction policies."
+        },
+        {
+          "id": "0004",
+          "filename": "0004-database-replication-read-replicas.html",
+          "title": "Scaling the Database: Replication, Read Replicas & Failover",
+          "navTitle": "Database Replication & Read Replicas",
+          "badge": "Lesson 0004",
+          "time": "20 mins",
+          "tag": "Interactive Sim",
+          "summary": "Single-leader replication, synchronous vs asynchronous durability, solving replication lag anomalies (read-your-own-writes), and avoiding split-brain."
+        },
+        {
+          "id": "0005",
+          "filename": "0005-database-partitioning-sharding.html",
+          "title": "Database Partitioning, Sharding & Consistent Hashing",
+          "navTitle": "Database Partitioning & Sharding",
+          "badge": "Lesson 0005",
+          "time": "20 mins",
+          "tag": "Interactive Sim",
+          "summary": "Overcome the single primary write bottleneck, range vs hash partitioning, avoid the modulo resharding trap with consistent hash rings, and key salting."
+        }
+      ],
+      "milestone": {
+        "id": "milestone-2",
+        "number": 2,
+        "title": "Milestone 2 Practical Test: Flash-Sale Product Catalog & Partitioned Inventory Store",
+        "navTitle": "Milestone 2 Test",
+        "badge": "Milestone 2 Test",
+        "time": "45-60 mins",
+        "tag": "Practical Challenge",
+        "summary": "Architect a resilient data layer scaling 200,000 read QPS and 15,000 write QPS using multi-tier caching, consistent hashing database sharding, and replication lag defenses.",
+        "question": {
+          "scenario": "You are Principal Data Architect at 'FlashVault', a global marketplace managing 50,000,000 active SKUs across 80,000 merchants. During seasonal flash sales, catalog browsing triggers a read storm of 200,000 QPS, while checkout attempts trigger 15,000 write QPS on limited-quantity inventories. The legacy monolithic PostgreSQL database collapses under read exhaustion, primary-replica replication lag spikes to 12 seconds causing customers to see phantom stock, and celebrity drops crash individual database shards.",
+          "trafficAndScale": [
+            "Active Catalog: 50,000,000 SKUs (average SKU record: 2 KB)",
+            "Read Throughput: 200,000 read QPS across catalog item endpoints (p99 SLA < 15ms)",
+            "Write Throughput: 15,000 concurrent inventory deduction QPS (p99 SLA < 40ms, zero overselling allowed)",
+            "Cache Cluster Budget: 120 GB RAM across distributed Redis Cluster nodes",
+            "Database Shards: Sharded PostgreSQL cluster with primary-replica topology across 3 Availability Zones"
+          ],
+          "requirements": [
+            "Protect database primaries from exceeding 2,000 read QPS through a multi-tier caching strategy.",
+            "Eliminate cache stampedes when celebrity SKUs expire or are invalidated under 20,000 concurrent hits.",
+            "Prevent replication lag anomalies (specifically Read-Your-Own-Writes inconsistency where a buyer immediately refreshes their order confirmation and sees stale inventory/order state).",
+            "Distribute inventory writes across a sharded database using consistent hashing, and engineer a concrete defense for the 'Celebrity Drop' single-key write hotspot."
+          ],
+          "deliverables": [
+            {
+              "section": "1. Multi-Tier Caching & Stampede Defense",
+              "description": "Design the caching architecture to absorb 99%+ of read traffic safely.",
+              "tasks": [
+                "Calculate the required cache hit ratio to throttle 200,000 read QPS down to under 2,000 QPS at the primary database layer.",
+                "Specify the multi-tier cache hierarchy (Edge CDN vs Distributed Redis Cluster vs Local Memory) and explain what is cached at each tier.",
+                "Detail the cache stampede prevention mechanism for viral SKUs: Contrast SingleFlight (mutex locking) with probabilistic early expiration (XFetch algorithm). Which will you implement and why?",
+                "Select and justify the Redis eviction policy (allkeys-lru vs volatile-lru vs allkeys-lfu) for FlashVault's 120 GB RAM budget."
+              ]
+            },
+            {
+              "section": "2. Replication Topology & Read Consistency",
+              "description": "Architect read replicas and solve distributed replication lag anomalies.",
+              "tasks": [
+                "Design the primary-replica topology across 3 Availability Zones (sync vs async replication trade-offs for inventory durability).",
+                "Propose a concrete solution to guarantee 'Read-Your-Own-Writes' consistency for users without routing all traffic back to the primary database.",
+                "Explain how split-brain is prevented during automatic leader election when the network partitions AZ-1 from AZ-2, and how fencing tokens prevent zombie primaries from corrupting stock."
+              ]
+            },
+            {
+              "section": "3. Database Partitioning, Consistent Hashing & Celebrity Keys",
+              "description": "Design the horizontal sharding strategy and resolve write hot spots.",
+              "tasks": [
+                "Evaluate partition key candidates for the inventory table: sku_id vs merchant_id vs composite key (merchant_id, sku_id). Defend your partition key choice.",
+                "Design the consistent hashing ring topology: Explain how virtual nodes (vnodes) prevent data skew across heterogeneous shard hardware.",
+                "The Celebrity Drop Hotspot: When 10,000 QPS attempts to decrement stock for a single limited-edition sneaker SKU located on a single shard, row-level locking causes connection pool exhaustion. Propose a concrete architectural mitigation (e.g., inventory sub-bucket salting, Redis atomic decrement reservation tokens, or write-combining)."
+              ]
+            }
+          ],
+          "evaluationCriteria": [
+            "Cache math rigor: Accurately derives required cache hit ratio (>99%) and models memory sizing with overhead.",
+            "Stampede mitigation: Concrete implementation details for SingleFlight mutex or probabilistic early expiration.",
+            "Replication lag mastery: Correctly identifies read-your-own-writes mitigations (session tracking, timeline pinning, or write-through routing).",
+            "Hotspot engineering: Practical, production-grade strategy for celebrity key write concurrency without distributed deadlocks."
+          ]
+        },
+        "customPrompt": "I have completed the practical test for Milestone 2: Flash-Sale Product Catalog & Partitioned Inventory Store.\n\nHere is my architectural solution:\n[INSERT YOUR ARCHITECTURAL SOLUTION HERE]\n\nPlease review my solution against the Milestone 2 rubric and provide a structured critique covering:\n1. 🎯 Executive Verdict & Grade (Senior Architect Grade / Pass / Revisions Needed)\n2. ✅ What is Good (Strengths in caching math, stampede protection, replication topology, and sharding design)\n3. ❌ What is Wrong / Risky (Replication anomalies, hot-key bottlenecks, split-brain risks, or invalidation traps)\n4. 💡 What Can Be Improved (Production optimizations, memory tuning, fencing token implementation, and monitoring metrics)"
+      }
+    },
+    {
+      "id": "module-3",
+      "number": 3,
+      "title": "Asynchronous Decoupling & Event Streams",
+      "badge": "Module 3: Asynchronous Decoupling",
+      "description": "Decouple synchronous microservices, absorb volatile ingestion spikes, prevent cascading outages, and establish event-driven idempotency.",
+      "lessons": [
+        {
+          "id": "0006",
+          "filename": "0006-message-queues-backpressure.html",
+          "title": "Asynchronous Processing: Message Queues, Streams & Backpressure",
+          "navTitle": "Message Queues & Backpressure",
+          "badge": "Lesson 0006",
+          "time": "20 mins",
+          "tag": "Queue Simulator",
+          "summary": "Synchronous fan-out traps, Queue vs Log Stream semantics (RabbitMQ vs Kafka), consumer backpressure in Node.js, and at-least-once idempotency."
+        },
+        {
+          "id": "0007",
+          "filename": "0007-transactional-outbox-dual-writes.html",
+          "title": "Reliable Event Publishing: The Dual-Write Problem & Transactional Outbox",
+          "navTitle": "Transactional Outbox & Dual-Writes",
+          "badge": "Lesson 0007",
+          "time": "20 mins",
+          "tag": "Outbox Simulator",
+          "summary": "Eliminate silent dual-write data loss between SQL and Kafka, implement the Transactional Outbox pattern with Change Data Capture (CDC), and ensure guaranteed event delivery."
+        },
+        {
+          "id": "0008",
+          "filename": "0008-distributed-sagas-eventual-consistency.html",
+          "title": "Distributed Transactions: The Saga Pattern & Compensating Workflows",
+          "navTitle": "Distributed Sagas & Consistency",
+          "badge": "Lesson 0008",
+          "time": "20 mins",
+          "tag": "Saga Simulator",
+          "summary": "Coordinate multi-service business workflows without 2-Phase Commit (2PC) bottlenecks, contrast choreography vs orchestration sagas, and engineer compensating rollback actions."
+        }
+      ],
+      "milestone": {
+        "id": "milestone-3",
+        "number": 3,
+        "title": "Milestone 3 Practical Test: Mission-Critical Asynchronous Checkout & Distributed Saga",
+        "navTitle": "Milestone 3 Test",
+        "badge": "Milestone 3 Test",
+        "time": "45-60 mins",
+        "tag": "Practical Challenge",
+        "summary": "Design an end-to-end checkout pipeline with guaranteed at-least-once outbox publishing, Kafka log partitioning, consumer backpressure, and a compensating Saga workflow.",
+        "question": {
+          "scenario": "You are Chief Enterprise Architect at 'NovaPay', an enterprise payment and fulfillment gateway processing $50 million per hour across 4 autonomous microservices: Order Service, Payment Gateway, Inventory Service, and Shipping/Logistics Service. The legacy system used synchronous REST HTTP chains and distributed two-phase commits (2PC), leading to distributed deadlocks, dual-write data loss when payments succeeded but events failed to publish, and cascading outages when the payment vendor experienced latency spikes. Your mandate is to design an asynchronous, resilient, event-driven checkout architecture with zero phantom charges and guaranteed eventual consistency.",
+          "trafficAndScale": [
+            "Throughput: 10,000 checkout submissions/sec during flash events",
+            "Financial Accuracy SLA: Zero phantom orders, zero uncompensated payment charges, 100% financial auditability",
+            "End-to-End Workflow SLA: 99.5% of checkout workflows must settle (Completed or Compensated) within 5 seconds",
+            "Microservices involved: Order Service (PostgreSQL), Payment Service (Stripe/Bank APIs), Inventory Service (PostgreSQL), Logistics Service (3PL API)",
+            "Messaging Backbone: Distributed Apache Kafka cluster"
+          ],
+          "requirements": [
+            "Completely decouple the client-facing checkout submission from downstream payment processing via an asynchronous ingestion buffer.",
+            "Eliminate dual-write vulnerabilities between the Order Service database and Kafka using the Transactional Outbox pattern with Change Data Capture (CDC).",
+            "Implement robust consumer backpressure in the Node.js event consumer workers to prevent Out-Of-Memory (OOM) crashes during Kafka lag spikes.",
+            "Model the distributed transaction across all 4 services using the Saga Pattern, detailing positive execution and compensating rollback flows with idempotency guarantees."
+          ],
+          "deliverables": [
+            {
+              "section": "1. Asynchronous Ingestion & Consumer Backpressure",
+              "description": "Design the ingestion pipeline and protective consumer flow control.",
+              "tasks": [
+                "Detail the Kafka topic and partitioning topology: Specify topic names, partition keys (e.g. order_id vs customer_id), partition count calculation for 10,000 QPS, replication factor (ISR=2), and producer acknowledgement level (acks=all).",
+                "Design the Node.js event consumer flow-control architecture: Explain how consumer workers handle backpressure when processing latency rises (detail highWaterMark, consumer.pause(), consumer.resume(), and event loop lag monitoring) to avoid process memory crashes.",
+                "Explain how consumer rebalances are mitigated during high message lag so consumers aren't repeatedly evicted from their consumer group."
+              ]
+            },
+            {
+              "section": "2. Dual-Write Elimination & Transactional Outbox",
+              "description": "Guarantee at-least-once event delivery without distributed transactions.",
+              "tasks": [
+                "Provide the SQL DDL schema for the orders table and outbox_events table in PostgreSQL.",
+                "Write the atomic SQL transaction block demonstrating how an order is created and an outbox event is appended simultaneously within the same database transaction boundary.",
+                "Evaluate Change Data Capture (CDC via PostgreSQL WAL logical decoding e.g. Debezium) vs Polling Publisher: Defend why CDC is the superior architectural choice at NovaPay's scale."
+              ]
+            },
+            {
+              "section": "3. Distributed Saga & Compensating Workflows",
+              "description": "Orchestrate multi-service transactions with bulletproof failure compensation.",
+              "tasks": [
+                "Defend the choice between Orchestration Saga vs Choreography Saga for this financial checkout pipeline.",
+                "Provide the full state machine diagram or sequence: ORDER_PENDING -> PAYMENT_AUTHORIZING -> INVENTORY_RESERVING -> ORDER_CONFIRMED.",
+                "Detail the Compensating Failure Scenario: The Payment Service successfully captures $200 from the user's credit card, but the Inventory Service rejects the reservation due to concurrent stock depletion. Detail the exact compensating workflow (refund issuance, order cancellation, customer notification) and how out-of-order compensation messages are safely handled using database idempotency keys and state version fencing."
+              ]
+            }
+          ],
+          "evaluationCriteria": [
+            "Asynchronous flow mastery: Kafka producer configuration (acks=all, min.insync.replicas=2), partition key selection, and backpressure pause/resume mechanisms.",
+            "Transactional Outbox rigor: Accurate SQL schema and transactional boundary elimination of dual-write data loss.",
+            "Saga state machine completeness: Clear compensation actions with idempotency keys and state fencing preventing duplicate or inverted rollbacks.",
+            "Production maturity: Awareness of consumer rebalances, poison pill messages, and dead-letter queue (DLQ) isolation."
+          ]
+        },
+        "customPrompt": "I have completed the practical test for Milestone 3: Mission-Critical Asynchronous Checkout & Distributed Saga.\n\nHere is my architectural solution:\n[INSERT YOUR ARCHITECTURAL SOLUTION HERE]\n\nPlease review my solution against the Milestone 3 rubric and provide a structured critique covering:\n1. 🎯 Executive Verdict & Grade (Senior Architect Grade / Pass / Revisions Needed)\n2. ✅ What is Good (Strengths in Kafka partition design, consumer backpressure, transactional outbox CDC, and Saga compensation)\n3. ❌ What is Wrong / Risky (Dual-write traps, missing idempotency keys, rebalance churn, unhandled compensation race conditions)\n4. 💡 What Can Be Improved (Production optimizations, Dead Letter Queue policies, monitoring metrics, and enterprise auditability)"
+      }
+    }
+  ],
+  "references": [
+    {
+      "id": "ref-latency",
+      "filename": "latency-numbers.html",
+      "title": "Latency Hierarchy & Capacity Sizing",
+      "navTitle": "Latency Hierarchy Reference",
+      "badge": "Capacity",
+      "category": "Hardware Limits",
+      "summary": "Computer latencies scaled to human time (1 CPU cycle = 1 second), network bottlenecks, and modern cloud server thresholds."
+    },
+    {
+      "id": "ref-lb",
+      "filename": "load-balancing-cheat-sheet.html",
+      "title": "Load Balancing & Stateless Compute",
+      "navTitle": "Load Balancing Cheat Sheet",
+      "badge": "Compute",
+      "category": "Networking",
+      "summary": "Layer 4 vs Layer 7 load balancing, balancing algorithms, the 5-point statelessness checklist, and health-check cascading outage prevention."
+    },
+    {
+      "id": "ref-caching",
+      "filename": "caching-strategies-cheat-sheet.html",
+      "title": "Caching Patterns & Invalidation",
+      "navTitle": "Caching Strategies Cheat Sheet",
+      "badge": "State",
+      "category": "State & Caching",
+      "summary": "Cache topologies decision matrix, LRU vs LFU vs volatile-ttl eviction policies, stampede mitigation, and cache consistency rules."
+    },
+    {
+      "id": "ref-replication",
+      "filename": "database-replication-cheat-sheet.html",
+      "title": "Replication & Failover Cheat Sheet",
+      "navTitle": "Replication & Failover Cheat Sheet",
+      "badge": "Storage",
+      "category": "Distributed Storage",
+      "summary": "Primary-replica topologies, sync vs async tradeoffs, replication lag mitigations, connection pooling architecture, and fencing tokens."
+    },
+    {
+      "id": "ref-sharding",
+      "filename": "database-sharding-cheat-sheet.html",
+      "title": "Sharding & Consistent Hashing",
+      "navTitle": "Sharding & Consistent Hashing",
+      "badge": "Partitioning",
+      "category": "Partitioning",
+      "summary": "Range vs hash trade-offs, consistent hashing ring topology, partition key selection rules, key salting formula, and pre-sharding checklist."
+    },
+    {
+      "id": "ref-queues",
+      "filename": "message-queues-cheat-sheet.html",
+      "title": "Message Queues & Event Streaming",
+      "navTitle": "Message Queues & Streams",
+      "badge": "Async",
+      "category": "Asynchronous Systems",
+      "summary": "Point-to-point queues vs distributed append-logs, delivery semantics, backpressure flow-control recipes, and dead-letter queue (DLQ) retry policies."
+    }
+  ]
+}

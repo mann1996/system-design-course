@@ -155,16 +155,7 @@ export const CurriculumProgressBanner: React.FC<CurriculumProgressBannerProps> =
       </div>
 
       {/* Filter Tabs by State */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          flexWrap: 'wrap',
-          borderTop: '1px solid var(--color-hairline)',
-          paddingTop: 'var(--space-sm)',
-        }}
-      >
+      <div className="progress-filter-track">
         <span style={{ fontSize: '12.5px', color: 'var(--color-muted)', fontWeight: 500, marginRight: '4px' }}>
           Filter View:
         </span>

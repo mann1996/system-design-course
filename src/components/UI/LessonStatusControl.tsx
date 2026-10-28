@@ -12,10 +12,10 @@ export const LessonStatusControl: React.FC<LessonStatusControlProps> = ({
   onChange,
   size = 'md',
 }) => {
-  const options: { value: LessonStatus; label: string; icon: string }[] = [
-    { value: 'not_started', label: 'Not Started', icon: '○' },
-    { value: 'in_progress', label: 'Currently Reading', icon: '📖' },
-    { value: 'completed', label: 'Completed', icon: '✓' },
+  const options: { value: LessonStatus; label: string; shortLabel: string; icon: string }[] = [
+    { value: 'not_started', label: 'Not Started', shortLabel: 'Not Started', icon: '○' },
+    { value: 'in_progress', label: 'Currently Reading', shortLabel: 'Reading', icon: '📖' },
+    { value: 'completed', label: 'Completed', shortLabel: 'Done', icon: '✓' },
   ];
 
   return (
@@ -23,15 +23,6 @@ export const LessonStatusControl: React.FC<LessonStatusControlProps> = ({
       className="status-segmented-control"
       role="radiogroup"
       aria-label="Set lesson learning state"
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        background: 'var(--color-surface-soft)',
-        border: '1px solid var(--color-hairline)',
-        borderRadius: 'var(--rounded-md)',
-        padding: '3px',
-        gap: '3px',
-      }}
     >
       {options.map((opt) => {
         const isSelected = status === opt.value;
@@ -62,27 +53,16 @@ export const LessonStatusControl: React.FC<LessonStatusControlProps> = ({
             role="radio"
             aria-checked={isSelected}
             onClick={() => onChange(opt.value)}
+            className={`status-segment-btn ${isSelected ? 'is-selected' : ''} ${size === 'sm' ? 'btn-size-sm' : 'btn-size-md'}`}
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: size === 'sm' ? '4px 10px' : '6px 14px',
-              fontSize: size === 'sm' ? '12px' : '13px',
-              fontWeight: isSelected ? 600 : 500,
-              fontFamily: 'var(--font-sans)',
               color: isSelected ? activeColor : 'var(--color-muted)',
               backgroundColor: isSelected ? activeBg : 'transparent',
-              border: isSelected ? activeBorder : '1px solid transparent',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              transition: 'all 0.15s ease',
-              outline: 'none',
-              boxShadow: isSelected ? '0 1px 3px rgba(0, 0, 0, 0.05)' : 'none',
-              whiteSpace: 'nowrap',
+              borderColor: isSelected ? activeBorder.split(' ')[2] : 'transparent',
             }}
           >
-            <span style={{ fontSize: opt.value === 'completed' ? '13px' : '11px' }}>{opt.icon}</span>
-            <span>{opt.label}</span>
+            <span className="status-segment-icon">{opt.icon}</span>
+            <span className="status-label-full">{opt.label}</span>
+            <span className="status-label-short">{opt.shortLabel}</span>
           </button>
         );
       })}

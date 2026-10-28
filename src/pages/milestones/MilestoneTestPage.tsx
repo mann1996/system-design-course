@@ -245,7 +245,7 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
 
           {/* Solution Editor Textarea */}
           <div style={{ marginBottom: 'var(--space-md)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', flexWrap: 'wrap', gap: '4px' }}>
               <label htmlFor="solution-draft" style={{ fontWeight: 600, fontSize: '14px', color: 'var(--color-body-strong)' }}>
                 Your Architectural Solution Draft:
               </label>
@@ -262,52 +262,38 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
               value={solutionDraft}
               onChange={(e) => setSolutionDraft(e.target.value)}
               placeholder={`# 1. Back-of-the-Envelope Capacity Sizing\n- Peak bandwidth calculation:\n- Compute instance count:\n- Redis cluster memory:\n\n# 2. Architecture & Topology\n- Network flow diagram/description:\n- L4 vs L7 load balancing defense:\n- Token authentication strategy:\n\n# 3. Failure Modes & Resilience\n- Cascading health check defense:\n- Graceful shutdown sequence:`}
-              style={{
-                width: '100%',
-                padding: 'var(--space-md)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '13.5px',
-                lineHeight: 1.6,
-                borderRadius: 'var(--rounded-md)',
-                border: '1px solid var(--color-hairline)',
-                background: 'var(--color-canvas)',
-                color: 'var(--color-body-strong)',
-                resize: 'vertical',
-                boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.03)',
-              }}
+              className="milestone-solution-textarea"
             />
           </div>
 
           {/* Action Buttons for Copying Custom Prompt */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: 'var(--space-lg)' }}>
+          <div className="milestone-copy-actions">
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-primary milestone-copy-btn"
               onClick={() => handleCopy(fullReviewPrompt, 'solution')}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
             >
               <span>📋</span>
               <span>
                 {copiedType === 'solution'
-                  ? '✓ Copied Prompt + Solution to Clipboard!'
-                  : 'Copy Review Prompt with My Solution'}
+                  ? '✓ Copied to Clipboard!'
+                  : 'Copy Review Prompt with Solution'}
               </span>
             </button>
 
             <button
               type="button"
-              className="btn btn-secondary"
+              className="btn btn-secondary milestone-copy-btn"
               onClick={() => handleCopy(blankPromptTemplate, 'blank')}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
             >
               <span>📄</span>
               <span>
-                {copiedType === 'blank' ? '✓ Template Copied!' : 'Copy Blank Prompt Template'}
+                {copiedType === 'blank' ? '✓ Template Copied!' : 'Copy Blank Template'}
               </span>
             </button>
 
             {solutionDraft.trim().length > 0 && (
-              <span style={{ fontSize: '13px', color: 'var(--color-muted)' }}>
+              <span className="milestone-word-count" style={{ fontSize: '13px', color: 'var(--color-muted)' }}>
                 {solutionDraft.trim().split(/\s+/).length} words drafted
               </span>
             )}
@@ -404,50 +390,13 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
         </section>
 
         {/* Milestone Completion & Bottom Navigation */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '16px',
-            margin: '48px 0 24px',
-            paddingTop: '24px',
-            borderTop: '1px solid var(--color-hairline)',
-          }}
-        >
-          <div>
-            {prev ? (
-              <Link
-                to={prev.path}
-                className="btn btn-secondary"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-              >
-                ← Previous: {prev.navTitle}
-              </Link>
-            ) : (
-              <Link to="/" className="btn btn-secondary">
-                ← Course Overview
-              </Link>
-            )}
-          </div>
-
-          <div>
+        <div className="lesson-nav-bar">
+          <div className="lesson-nav-status">
             {isCompleted ? (
               <button
                 type="button"
-                className="btn"
+                className="btn lesson-status-btn-completed"
                 onClick={() => toggleMilestoneStatus(milestone.id)}
-                style={{
-                  backgroundColor: 'var(--color-success-bg)',
-                  color: 'var(--success-text)',
-                  border: '1px solid #c2e2cc',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                }}
                 title="Click to toggle status back to In Progress"
               >
                 <span>✓ Milestone Completed</span>
@@ -464,6 +413,8 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
                   gap: '6px',
                   cursor: 'pointer',
                   fontWeight: 600,
+                  width: '100%',
+                  justifyContent: 'center',
                 }}
                 title="Mark this milestone practical test as completed"
               >
@@ -472,20 +423,41 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
             )}
           </div>
 
-          <div>
-            {next ? (
-              <Link
-                to={next.path}
-                className="btn btn-primary"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-              >
-                Next: {next.navTitle} →
-              </Link>
-            ) : (
-              <Link to="/" className="btn btn-primary">
-                Curriculum Completed ✓
-              </Link>
-            )}
+          <div className="lesson-nav-links-row">
+            <div className="lesson-nav-prev">
+              {prev ? (
+                <Link
+                  to={prev.path}
+                  className="btn btn-secondary"
+                >
+                  <span className="nav-arrow">←</span>
+                  <span className="nav-text-full">Previous: {prev.navTitle}</span>
+                  <span className="nav-text-short">Prev: {prev.badge}</span>
+                </Link>
+              ) : (
+                <Link to="/" className="btn btn-secondary">
+                  <span className="nav-arrow">←</span>
+                  <span>Course Overview</span>
+                </Link>
+              )}
+            </div>
+
+            <div className="lesson-nav-next">
+              {next ? (
+                <Link
+                  to={next.path}
+                  className="btn btn-primary"
+                >
+                  <span className="nav-text-full">Next: {next.navTitle}</span>
+                  <span className="nav-text-short">Next: {next.badge}</span>
+                  <span className="nav-arrow">→</span>
+                </Link>
+              ) : (
+                <Link to="/" className="btn btn-primary">
+                  <span>Curriculum Completed ✓</span>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
 

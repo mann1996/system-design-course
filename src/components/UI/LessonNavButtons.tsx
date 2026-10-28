@@ -14,50 +14,13 @@ export const LessonNavButtons: React.FC<LessonNavButtonsProps> = ({ currentLesso
   const isCompleted = currentStatus === 'completed';
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '16px',
-        margin: '48px 0 24px',
-        paddingTop: '24px',
-        borderTop: '1px solid var(--color-hairline)',
-      }}
-    >
-      <div>
-        {prev ? (
-          <Link
-            to={prev.path || `/lessons/${prev.id}`}
-            className="btn btn-secondary"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-          >
-            ← Previous: {prev.navTitle}
-          </Link>
-        ) : (
-          <Link to="/" className="btn btn-secondary">
-            ← Course Overview
-          </Link>
-        )}
-      </div>
-
-      <div>
+    <div className="lesson-nav-bar">
+      <div className="lesson-nav-status">
         {isCompleted ? (
           <button
             type="button"
-            className="btn"
+            className="btn lesson-status-btn-completed"
             onClick={() => markInProgress(currentLessonId)}
-            style={{
-              backgroundColor: 'var(--color-success-bg)',
-              color: 'var(--success-text)',
-              border: '1px solid #c2e2cc',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              cursor: 'pointer',
-              fontWeight: 600,
-            }}
             title="Click to revert status back to In Progress"
           >
             <span>✓ Completed</span>
@@ -66,38 +29,50 @@ export const LessonNavButtons: React.FC<LessonNavButtonsProps> = ({ currentLesso
         ) : (
           <button
             type="button"
-            className="btn btn-secondary"
+            className="btn btn-secondary lesson-status-btn-pending"
             onClick={() => markCompleted(currentLessonId)}
-            style={{
-              borderColor: 'var(--color-hairline)',
-              color: 'var(--color-body-strong)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              cursor: 'pointer',
-              fontWeight: 500,
-            }}
             title="Mark this lesson as completed"
           >
-            <span>✓ Mark as Completed</span>
+            <span>✓ Mark Lesson as Completed</span>
           </button>
         )}
       </div>
 
-      <div>
-        {next ? (
-          <Link
-            to={next.path || `/lessons/${next.id}`}
-            className="btn btn-primary"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-          >
-            Next: {next.navTitle} →
-          </Link>
-        ) : (
-          <Link to="/" className="btn btn-primary">
-            Complete Curriculum ✓
-          </Link>
-        )}
+      <div className="lesson-nav-links-row">
+        <div className="lesson-nav-prev">
+          {prev ? (
+            <Link
+              to={prev.path || `/lessons/${prev.id}`}
+              className="btn btn-secondary"
+            >
+              <span className="nav-arrow">←</span>
+              <span className="nav-text-full">Previous: {prev.navTitle}</span>
+              <span className="nav-text-short">Prev: {prev.badge}</span>
+            </Link>
+          ) : (
+            <Link to="/" className="btn btn-secondary">
+              <span className="nav-arrow">←</span>
+              <span>Course Overview</span>
+            </Link>
+          )}
+        </div>
+
+        <div className="lesson-nav-next">
+          {next ? (
+            <Link
+              to={next.path || `/lessons/${next.id}`}
+              className="btn btn-primary"
+            >
+              <span className="nav-text-full">Next: {next.navTitle}</span>
+              <span className="nav-text-short">Next: {next.badge}</span>
+              <span className="nav-arrow">→</span>
+            </Link>
+          ) : (
+            <Link to="/" className="btn btn-primary">
+              <span>Complete Curriculum ✓</span>
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

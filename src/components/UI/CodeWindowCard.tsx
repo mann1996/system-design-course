@@ -61,18 +61,20 @@ export const CodeWindowCard: React.FC<CodeWindowCardProps> = ({ title, code, lan
 
   return (
     <div className="code-window-card" style={{ position: 'relative' }}>
-      <div className="code-window-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div className="code-window-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1 }}>
           <div className="code-window-dots">
             <span style={{ background: '#ff5f56' }} />
             <span style={{ background: '#ffbd2e' }} />
             <span style={{ background: '#27c93f' }} />
           </div>
-          <div className="code-window-title">{title}</div>
+          <div className="code-window-title" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {title}
+          </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
           {targetLang !== 'text' && (
-            <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-on-dark-soft)', letterSpacing: '0.5px' }}>
+            <span className="code-window-lang" style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-on-dark-soft)', letterSpacing: '0.5px' }}>
               {targetLang}
             </span>
           )}
@@ -89,7 +91,8 @@ export const CodeWindowCard: React.FC<CodeWindowCardProps> = ({ title, code, lan
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
-              padding: '2px 6px',
+              padding: '4px 8px',
+              minHeight: '28px',
               borderRadius: '4px',
               transition: 'color 0.15s ease'
             }}

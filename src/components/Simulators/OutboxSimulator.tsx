@@ -312,7 +312,7 @@ export const OutboxSimulator: React.FC = () => {
       </div>
 
       {/* Side-by-Side Data Stores */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: '16px', marginBottom: '20px' }}>
         {/* PostgreSQL Store View */}
         <div className="card" style={{ padding: '16px', background: 'var(--color-canvas)', borderRadius: '8px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>

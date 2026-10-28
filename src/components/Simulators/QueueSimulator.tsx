@@ -160,14 +160,7 @@ export const QueueSimulator: React.FC = () => {
       </div>
 
       {/* Metrics Row */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '12px',
-          margin: '16px 0'
-        }}
-      >
+      <div className="queue-metrics-grid">
         <div style={{ background: 'var(--color-surface-soft)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
           <div style={{ fontSize: '11px', color: 'var(--color-muted)' }}>QUEUE DEPTH</div>
           <div style={{ fontSize: '20px', fontWeight: 600, color: queue.length > 12 ? 'var(--color-error)' : 'inherit' }}>
@@ -234,13 +227,7 @@ export const QueueSimulator: React.FC = () => {
       </div>
 
       {/* Workers Grid */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '12px'
-        }}
-      >
+      <div className="queue-workers-grid">
         {workers.map((w) => (
           <div
             key={w.id}

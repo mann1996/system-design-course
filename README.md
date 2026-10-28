@@ -10,6 +10,9 @@
 
 ---
 
+> [!NOTE]
+> **Disclaimer & Attribution**: All content, curriculum, interactive simulations, and lessons in this course were generated using **[Matt Pocock's `teach` skill](https://www.aihero.dev/skills-teach)** and **Gemini 3.8 Flash** using **Antigravity 2.0**.
+
 ## 🌐 Live URL
 
 The application is deployed and available at:
@@ -145,6 +148,15 @@ npm run preview
 - **AWS Architecture Center & Builders' Library** — Amazon Web Services
 - **Site Reliability Engineering (SRE) Book** — Google
 - **Enterprise Integration Patterns** — Gregor Hohpe & Bobby Woolf
+
+---
+
+## 🤖 Disclaimer & Attribution
+
+All content, curriculum structure, architectural deep dives, interactive simulators, code implementations, and quizzes across this project were generated using:
+- **[Matt Pocock's `teach` skill](https://www.aihero.dev/skills-teach)**
+- **Gemini 3.8 Flash**
+- Powered by **Antigravity 2.0**
 
 ---
 

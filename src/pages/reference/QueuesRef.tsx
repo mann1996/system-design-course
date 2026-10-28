@@ -131,7 +131,7 @@ export async function consumePayment(channel: Channel, msg: ConsumeMessage | nul
 
         <AgentReminder
           title="Questions about Kafka vs RabbitMQ or SQS?"
-          promptText='Ask your AI tutor: "How should I structure message retries and dead-letter queues in my TypeScript backend?"'
+          promptText='Ask an AI chat of your choice: "How should I structure message retries and dead-letter queues in my TypeScript backend?"'
         />
       </div>
     </div>

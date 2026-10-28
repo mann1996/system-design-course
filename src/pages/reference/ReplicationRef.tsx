@@ -135,7 +135,7 @@ export const ReplicationRef: React.FC = () => {
 
         <AgentReminder
           title="Questions about Primary-Replica failover?"
-          promptText='Ask your AI tutor: "How should I configure PgBouncer and Read Replicas in a Node.js microservices architecture?"'
+          promptText='Ask an AI chat of your choice: "How should I configure PgBouncer and Read Replicas in a Node.js microservices architecture?"'
         />
       </div>
     </div>

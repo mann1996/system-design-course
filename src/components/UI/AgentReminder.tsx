@@ -7,13 +7,13 @@ interface AgentReminderProps {
 
 export const AgentReminder: React.FC<AgentReminderProps> = ({
   title = 'Learning Progress Checkpoint',
-  promptText = 'Ask your AI tutor: "I have finished this lesson! Please grill me on edge cases and failure modes."'
+  promptText = 'Ask an AI chat of your choice: "I have finished this lesson! Please grill me on edge cases and failure modes."'
 }) => {
   return (
     <div className="agent-reminder">
       <h4>{title}</h4>
       <p style={{ margin: '8px 0 0' }}>
-        <strong>Action:</strong> Copy and send this prompt to your AI Tutor in chat:
+        <strong>Action:</strong> Copy and send this prompt to an AI chat of your choice:
       </p>
       <div
         style={{

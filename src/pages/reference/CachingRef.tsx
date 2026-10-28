@@ -146,7 +146,7 @@ export const CachingRef: React.FC = () => {
 
         <AgentReminder
           title="Questions about Redis Cluster or Memcached?"
-          promptText='Ask your AI tutor: "How should I design caching for my application to avoid cache stampede?"'
+          promptText='Ask an AI chat of your choice: "How should I design caching for my application to avoid cache stampede?"'
         />
       </div>
     </div>

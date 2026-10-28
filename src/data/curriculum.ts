@@ -72,6 +72,16 @@ export interface Curriculum {
 
 export const curriculum: Curriculum = curriculumData as Curriculum;
 
+export const allModules: ModuleInfo[] = curriculum.modules.map((mod) => ({
+  ...mod,
+  lessons: mod.lessons.map((les) => ({
+    ...les,
+    moduleId: mod.id,
+    moduleBadge: mod.badge,
+    moduleNumber: mod.number,
+  })),
+}));
+
 export const allLessons: LessonInfo[] = curriculum.modules.flatMap((mod) =>
   mod.lessons.map((les) => ({
     ...les,
@@ -112,6 +122,83 @@ export function getMilestoneById(id: string): MilestoneInfo | undefined {
 
 export function getMilestoneForModule(moduleId: string): MilestoneInfo | undefined {
   return allMilestones.find((m) => m.moduleId === moduleId);
+}
+
+/**
+ * Generates a self-contained, generic AI review prompt.
+ * Contains the complete scenario, scale metrics, deliverables, rubric, and solution draft.
+ * Can be pasted into any external AI chat (ChatGPT, Claude, Gemini, DeepSeek, etc.)
+ * with zero prior knowledge of the curriculum.
+ */
+export function generateMilestoneReviewPrompt(
+  milestone: MilestoneInfo,
+  solution?: string
+): string {
+  const deliverablesText = milestone.question.deliverables
+    .map(
+      (deliv, idx) =>
+        `### Deliverable ${idx + 1}: ${deliv.section}\n${deliv.description}\n` +
+        deliv.tasks.map((task, tIdx) => `  ${tIdx + 1}. ${task}`).join('\n')
+    )
+    .join('\n\n');
+
+  const scaleText = milestone.question.trafficAndScale.map((s) => `• ${s}`).join('\n');
+  const reqText = milestone.question.requirements.map((r) => `• ${r}`).join('\n');
+  const rubricText = milestone.question.evaluationCriteria.map((c) => `• ${c}`).join('\n');
+
+  const solutionBlock =
+    solution && solution.trim().length > 0
+      ? solution.trim()
+      : '[PASTE YOUR ARCHITECTURAL SOLUTION HERE]';
+
+  return `You are acting as an expert Principal Distributed Systems Architect conducting an authoritative, rigorous system design review. I am submitting my proposed technical architecture for the real-world production challenge detailed below. Please evaluate my solution objectively and thoroughly without superficial praise.
+
+================================================================================
+SYSTEM DESIGN PRACTICAL CHALLENGE: ${milestone.title}
+================================================================================
+
+## 1. Real-World Scenario Context
+${milestone.question.scenario}
+
+## 2. Quantitative Scale & Operational Bounds
+${scaleText}
+
+## 3. Core Architectural Requirements & Constraints
+${reqText}
+
+## 4. Required Deliverables & Questions to Address
+${deliverablesText}
+
+## 5. Architectural Evaluation Rubric
+${rubricText}
+
+================================================================================
+CANDIDATE'S PROPOSED SOLUTION
+================================================================================
+${solutionBlock}
+================================================================================
+
+## REVIEW INSTRUCTIONS FOR THE ARCHITECT:
+Evaluate the candidate's solution against the scenario constraints, required deliverables, and evaluation rubric with staff-level rigor. Be objective, technically precise, and constructively critical.
+
+Format your review using the following exact structure:
+
+### 🎯 Executive Verdict & Grade
+- Grade: [Assign a grade: e.g., Senior Architect Grade (9/10), Pass (7/10), or Revisions Recommended]
+- Summary: A 1-2 paragraph executive assessment of whether this architecture would survive production traffic without catastrophic collapse, cascading outages, or data loss.
+
+### ✅ What is Good
+- Detail sound design choices, mathematically accurate sizing calculations, correct component selections, statelessness guarantees, and effective fault isolation boundaries.
+- Cite specific elements from the candidate's solution that demonstrated senior-level competence.
+
+### ❌ What is Wrong / Risky
+- Rigorously identify any flaws: sizing or unit conversion errors, single points of failure (SPOF), missing consumer backpressure, cache stampede vulnerabilities, race conditions, dual-write data loss risks, replication lag anomalies, or unhandled network partition failure modes.
+- Explain the specific failure cascade that would occur under peak load if left unfixed.
+
+### 💡 What Can Be Improved
+- Recommend concrete, production-grade architectural refinements and enterprise patterns.
+- Specify exact observability and alerting metrics (e.g. target p99 latency thresholds, queue consumer lag alerts, CPU/memory saturation watermarks, and error budgets).
+- Highlight scaling headroom and future resilience steps.`;
 }
 
 export function getReferenceById(id: string): ReferenceInfo | undefined {

@@ -307,8 +307,8 @@ export class DatabaseClusterManager {
         <LessonNavButtons currentLessonId="0004" />
 
         <AgentReminder
-          title="Your AI Tutor is standing by"
-          promptText='Have questions about when to pick Multi-Leader vs Single-Leader? Unsure whether to use PgBouncer vs AWS RDS Proxy? Ask: "Hey tutor, how should I configure PgBouncer for read replicas?"'
+          title="Explore Further with AI"
+          promptText='Have questions about when to pick Multi-Leader vs Single-Leader? Unsure whether to use PgBouncer vs AWS RDS Proxy? Ask an AI chat of your choice: "How should I configure PgBouncer for read replicas?"'
         />
       </div>
     </div>

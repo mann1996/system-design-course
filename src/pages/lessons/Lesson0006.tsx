@@ -237,7 +237,7 @@ async function startWorker() {
 
         <AgentReminder
           title="Ready to Discuss Real-World Scenarios?"
-          promptText='Ask your AI tutor: "How do we handle the Transactional Outbox pattern when writing to Postgres and publishing to Kafka simultaneously?"'
+          promptText='Ask an AI chat of your choice: "How do we handle the Transactional Outbox pattern when writing to Postgres and publishing to Kafka simultaneously?"'
         />
       </div>
     </div>

@@ -210,8 +210,8 @@ app.get('/dashboard', (req, res) => {
         <LessonNavButtons currentLessonId="0002" />
 
         <AgentReminder
-          title="Your Personal Tutor is Standing By"
-          promptText='Did you notice in your own freelance projects any state stored in memory (like JWT blacklists, WebSocket connections, or cron tasks)? Ask: "How do I refactor my Node.js app to be 100% stateless?"'
+          title="Explore Further with AI"
+          promptText='Did you notice in your own freelance projects any state stored in memory (like JWT blacklists, WebSocket connections, or cron tasks)? Ask an AI chat of your choice: "How do I refactor my Node.js app to be 100% stateless?"'
         />
       </div>
     </div>

@@ -402,7 +402,7 @@ export async function processOutboxBatch(db: Pool, kafkaProducer: Producer) {
 
         <AgentReminder
           title="Ready to Scale to Multi-Service Workflows?"
-          promptText='Ask your AI tutor: "Now that we publish events reliably with the Outbox pattern, how do we coordinate transactions across 4 independent microservices using Distributed Sagas?"'
+          promptText='Ask an AI chat of your choice: "Now that we publish events reliably with the Outbox pattern, how do we coordinate transactions across 4 independent microservices using Distributed Sagas?"'
         />
       </div>
     </div>

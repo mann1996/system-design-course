@@ -374,7 +374,7 @@ export class SagaOrchestrator<TContext> {
 
         <AgentReminder
           title="Ready to Secure Your System Edge?"
-          promptText='Ask your AI tutor: "Now that we have decoupled async queues, outboxes, and sagas, how do we protect our services from traffic surges using API Gateways and Distributed Rate Limiting?"'
+          promptText='Ask an AI chat of your choice: "Now that we have decoupled async queues, outboxes, and sagas, how do we protect our services from traffic surges using API Gateways and Distributed Rate Limiting?"'
         />
       </div>
     </div>

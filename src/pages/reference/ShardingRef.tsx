@@ -119,7 +119,7 @@ function getSaltedKey(userId: string): string {
 
         <AgentReminder
           title="Considering Citus Data, Vitess, or Spanner?"
-          promptText='Ask your AI tutor: "How should I structure my database schema before partitioning to avoid cross-shard joins?"'
+          promptText='Ask an AI chat of your choice: "How should I structure my database schema before partitioning to avoid cross-shard joins?"'
         />
       </div>
     </div>

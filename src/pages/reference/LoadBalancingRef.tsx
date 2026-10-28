@@ -129,7 +129,7 @@ export const LoadBalancingRef: React.FC = () => {
 
         <AgentReminder
           title="Scaling a monolithic backend?"
-          promptText='Ask your AI tutor: "How do I audit my Express app to ensure it is 100% ready for horizontal scaling behind an ALB?"'
+          promptText='Ask an AI chat of your choice: "How do I audit my Express app to ensure it is 100% ready for horizontal scaling behind an ALB?"'
         />
       </div>
     </div>

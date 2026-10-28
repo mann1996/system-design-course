@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MilestoneInfo, getAdjacentCourseItem } from '../../data/curriculum';
+import { MilestoneInfo, getAdjacentCourseItem, generateMilestoneReviewPrompt } from '../../data/curriculum';
 import { useLessonProgress } from '../../context/LessonProgressContext';
 import { AgentReminder } from '../../components/UI/AgentReminder';
 
@@ -40,29 +40,9 @@ export const MilestoneTestPage: React.FC<MilestoneTestPageProps> = ({ milestone 
     }
   }, [solutionDraft, draftStorageKey]);
 
-  // Construct complete review prompt including student's solution
-  const fullReviewPrompt = `[Milestone Practical Test Submission]
-Milestone: ${milestone.title}
-Module: ${milestone.moduleBadge || 'System Design Curriculum'}
-
-Scenario Context:
-${milestone.question.scenario}
-
-System Requirements & Scale:
-${milestone.question.trafficAndScale.map((s) => `• ${s}`).join('\n')}
-
-Student Solution:
----
-${solutionDraft.trim() ? solutionDraft : '[No solution draft entered yet - please write your architectural design here before sending, or paste it directly into chat]'}
----
-
-Please provide an authoritative, senior-architect-grade evaluation of my solution structured as:
-1. 🎯 Executive Verdict & Grade (Senior Architect Grade / Pass / Revisions Needed)
-2. ✅ What is Good (Identify accurate sizing calculations, sound architectural decisions, and proper distributed failure boundaries)
-3. ❌ What is Wrong / Risky (Identify any math errors, single points of failure, missing backpressure, cache stampede risks, race conditions, or unhandled partition modes)
-4. 💡 What Can Be Improved (Concrete architectural optimizations, enterprise-grade production patterns, monitoring metrics like p99 latency & saturation thresholds, and scalability headroom)`;
-
-  const blankPromptTemplate = milestone.customPrompt;
+  // Construct self-contained review prompt (portable to ANY AI chat without curriculum context)
+  const fullReviewPrompt = generateMilestoneReviewPrompt(milestone, solutionDraft);
+  const blankPromptTemplate = generateMilestoneReviewPrompt(milestone, '');
 
   const handleCopy = async (text: string, type: 'solution' | 'blank') => {
     try {
@@ -234,13 +214,14 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
           }}
         >
           <div className="badge-row" style={{ marginBottom: 'var(--space-xs)' }}>
-            <span className="badge badge-coral">Solution Workspace &amp; Review Submission</span>
-            <span className="badge">AI Assisted Review</span>
+            <span className="badge badge-coral">Solution Workspace</span>
+            <span className="badge">Standalone AI Prompt</span>
+            <span className="badge badge-teal">Works in Any AI Chat</span>
           </div>
 
-          <h2 style={{ marginTop: 0, marginBottom: '8px' }}>Draft Your Solution &amp; Submit for Review</h2>
+          <h2 style={{ marginTop: 0, marginBottom: '8px' }}>Draft Your Solution &amp; Generate Generic AI Review Prompt</h2>
           <p style={{ color: 'var(--color-body)', fontSize: '15px', marginBottom: 'var(--space-lg)' }}>
-            Type or paste your architectural design below. When ready, click <strong>"Copy Review Prompt with Solution"</strong> and submit it directly in this chat. Your personal AI tutor will evaluate your submission with an authoritative structured critique.
+            Type or draft your architectural solution below. Click <strong>"Copy Review Prompt with Solution"</strong> to generate a 100% self-contained review prompt that packages the scenario, numerical constraints, required deliverables, and evaluation rubric with your answer. You can paste this prompt into <strong>an AI chat of your choice (ChatGPT, Claude, Gemini, DeepSeek, etc.)</strong> without needing any context of this curriculum.
           </p>
 
           {/* Solution Editor Textarea */}
@@ -267,7 +248,7 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
           </div>
 
           {/* Action Buttons for Copying Custom Prompt */}
-          <div className="milestone-copy-actions">
+          <div className="milestone-copy-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: 'var(--space-lg)' }}>
             <button
               type="button"
               className="btn btn-primary milestone-copy-btn"
@@ -276,8 +257,8 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
               <span>📋</span>
               <span>
                 {copiedType === 'solution'
-                  ? '✓ Copied to Clipboard!'
-                  : 'Copy Review Prompt with Solution'}
+                  ? '✓ Copied Generic Review Prompt!'
+                  : 'Copy Review Prompt with My Solution'}
               </span>
             </button>
 
@@ -288,7 +269,7 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
             >
               <span>📄</span>
               <span>
-                {copiedType === 'blank' ? '✓ Template Copied!' : 'Copy Blank Template'}
+                {copiedType === 'blank' ? '✓ Blank Prompt Copied!' : 'Copy Blank Prompt Template'}
               </span>
             </button>
 
@@ -318,7 +299,7 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
             >
               <span>✓</span>
               <span>
-                Prompt copied to clipboard! Paste it into the assistant chat to get your structured review.
+                Generic review prompt copied to clipboard! Paste it into an AI chat of your choice (ChatGPT, Claude, Gemini, DeepSeek) for an immediate structured architectural review.
               </span>
             </div>
           )}
@@ -332,9 +313,9 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
               padding: 'var(--space-md)',
             }}
           >
-            <h4 style={{ margin: '0 0 8px', fontSize: '15px' }}>What happens when you submit in chat?</h4>
+            <h4 style={{ margin: '0 0 8px', fontSize: '15px' }}>Universal AI Compatibility</h4>
             <p style={{ margin: '0 0 8px', fontSize: '13.5px', color: 'var(--color-body)' }}>
-              Your assistant will examine your solution against senior staff architect criteria and provide an objective, 3-pillar structured review:
+              The copied prompt is fully self-contained with the problem statement, scale figures, question deliverables, and evaluation rubric. When pasted into any AI assistant, it instructs the model to act as a Principal Architect and deliver:
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
               <div style={{ padding: '8px 12px', background: 'var(--color-success-bg)', borderRadius: 'var(--rounded-sm)', border: '1px solid #c2e2cc' }}>
@@ -462,8 +443,8 @@ Please provide an authoritative, senior-architect-grade evaluation of my solutio
         </div>
 
         <AgentReminder
-          title="Interactive Tutor Feedback"
-          promptText={`Finished your draft? Paste the prompt in chat: "Here is my solution for ${milestone.badge}..." and I will give you a comprehensive architectural review!`}
+          title="Interactive Review Feedback"
+          promptText={`Finished your draft? Paste the prompt into an AI chat of your choice: "Here is my solution for ${milestone.badge}..." to receive a comprehensive architectural review!`}
         />
       </main>
     </div>

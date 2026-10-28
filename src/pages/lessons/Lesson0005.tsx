@@ -249,8 +249,8 @@ export class ConsistentShardRouter {
         <LessonNavButtons currentLessonId="0005" />
 
         <AgentReminder
-          title="Your AI Tutor is standing by"
-          promptText='Need help choosing between Vitess, Citus Data, AWS Aurora Limitless, or application-level sharding for a project? Ask: "Hey tutor, how should I partition my e-commerce database?"'
+          title="Explore Further with AI"
+          promptText='Need help choosing between Vitess, Citus Data, AWS Aurora Limitless, or application-level sharding for a project? Ask an AI chat of your choice: "How should I partition my e-commerce database?"'
         />
       </div>
     </div>

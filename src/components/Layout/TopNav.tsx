@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { allLessons, allReferences, allMilestones, getLessonById, getMilestoneById, getAdjacentLessons, getAdjacentCourseItem } from '../../data/curriculum';
+import { allLessons, allModules, allReferences, allMilestones, getLessonById, getMilestoneById, getAdjacentLessons, getAdjacentCourseItem } from '../../data/curriculum';
 import { usePWA } from '../../hooks/usePWA';
 import { useLessonProgress } from '../../context/LessonProgressContext';
 
@@ -185,28 +185,38 @@ export const TopNav: React.FC = () => {
                   <path d="M2 4l4 4 4-4" />
                 </svg>
               </button>
-              <ul className="nav-dropdown-menu">
-                {allLessons.map((l) => {
-                  const isActive = activeLessonId === l.id;
-                  return (
-                    <li key={l.id} className="nav-dropdown-item">
-                      <Link
-                        to={`/lessons/${l.id}`}
-                        className={isActive ? 'active' : ''}
-                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span className="nav-item-num">{l.badge}</span>
-                          <span className="nav-item-title">{l.navTitle}</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', flexShrink: 0 }}>
-                          {renderStatusIcon(l.id)}
-                        </div>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
+              <div className="nav-dropdown-menu nav-dropdown-menu--lessons" role="menu">
+                {allModules.map((mod, modIdx) => (
+                  <div key={mod.id} className="nav-dropdown-module-group" role="group" aria-label={mod.badge}>
+                    <div className="nav-dropdown-module-header">
+                      <span className="nav-dropdown-module-badge">{mod.badge}</span>
+                    </div>
+                    <ul className="nav-dropdown-module-list" role="none">
+                      {mod.lessons.map((l) => {
+                        const isActive = activeLessonId === l.id;
+                        return (
+                          <li key={l.id} className="nav-dropdown-item" role="none">
+                            <Link
+                              to={`/lessons/${l.id}`}
+                              className={`nav-item-row ${isActive ? 'active' : ''}`}
+                              role="menuitem"
+                            >
+                              <div className="nav-dropdown-item-left">
+                                <span className="nav-item-num-inline">{l.id}</span>
+                                <span className="nav-item-title-inline">{l.navTitle}</span>
+                              </div>
+                              <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', flexShrink: 0, paddingLeft: '8px' }}>
+                                {renderStatusIcon(l.id)}
+                              </div>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    {modIdx < allModules.length - 1 && <div className="nav-dropdown-divider" />}
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Milestones Dropdown */}
@@ -461,29 +471,38 @@ export const TopNav: React.FC = () => {
 
           {/* Tab 1: Lessons */}
           {mobileActiveTab === 'lessons' && (
-            <div className="mobile-drawer-list">
-              {allLessons.map((l) => {
-                const isActive = activeLessonId === l.id;
-                return (
-                  <Link
-                    key={l.id}
-                    to={`/lessons/${l.id}`}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`mobile-drawer-item ${isActive ? 'is-active' : ''}`}
-                  >
-                    <div className="mobile-drawer-item-left">
-                      <span className="mobile-drawer-status-bullet">
-                        {renderStatusIcon(l.id)}
-                      </span>
-                      <div className="mobile-drawer-item-text">
-                        <span className="mobile-drawer-item-title">{l.navTitle}</span>
-                        <span className="mobile-drawer-item-badge">{l.badge} &bull; {l.time}</span>
-                      </div>
-                    </div>
-                    <span className="mobile-drawer-arrow">&rarr;</span>
-                  </Link>
-                );
-              })}
+            <div className="mobile-drawer-list mobile-drawer-list--grouped">
+              {allModules.map((mod) => (
+                <div key={mod.id} className="mobile-drawer-module-group">
+                  <div className="mobile-drawer-module-header">
+                    <span className="mobile-drawer-module-badge">{mod.badge}</span>
+                  </div>
+                  <div className="mobile-drawer-module-items">
+                    {mod.lessons.map((l) => {
+                      const isActive = activeLessonId === l.id;
+                      return (
+                        <Link
+                          key={l.id}
+                          to={`/lessons/${l.id}`}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`mobile-drawer-item ${isActive ? 'is-active' : ''}`}
+                        >
+                          <div className="mobile-drawer-item-left">
+                            <span className="mobile-drawer-status-bullet">
+                              {renderStatusIcon(l.id)}
+                            </span>
+                            <div className="mobile-drawer-item-text">
+                              <span className="mobile-drawer-item-title">{l.navTitle}</span>
+                              <span className="mobile-drawer-item-badge">{l.badge} &bull; {l.time}</span>
+                            </div>
+                          </div>
+                          <span className="mobile-drawer-arrow">&rarr;</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 

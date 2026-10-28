@@ -158,7 +158,7 @@ export const LatencyRef: React.FC = () => {
 
         <AgentReminder
           title="Need to size a client system?"
-          promptText={`Bring your DAU and payload requirements to our chat: "Hey tutor, let's calculate the hardware requirements for my 500k DAU app!"`}
+          promptText={`Bring your DAU and payload requirements to an AI chat of your choice: "Let's calculate the hardware requirements for my 500k DAU app!"`}
         />
       </div>
     </div>

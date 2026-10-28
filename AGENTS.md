@@ -53,7 +53,6 @@ Every new lesson MUST be created as a TypeScript React component in `src/pages/l
    - Add route render check `if (canonicalId === 'XXXX') return <LessonXXXX />;`
 3. Update `curriculum.json` with the lesson metadata under its module.
 4. Verify by running `npm run build` (`tsc && vite build`) to confirm zero compilation errors and clean PWA bundle generation.
-5. (Optional) Run `python3 scripts/sync_curriculum.py` to keep legacy multi-page HTML synchronized.
 
 ### Reference Sheets
 - Reference Sheets are authored in `src/pages/reference/` and registered in `src/pages/ReferenceDispatcher.tsx` and `curriculum.json` (or `reference/TEMPLATE.html` for static fallbacks).
@@ -83,7 +82,7 @@ Each module in the curriculum culminates in a mandatory **End-of-Milestone Pract
      - `requirements`: Architectural constraints and rules.
      - `deliverables`: Numbered task sections (1. Capacity Math, 2. Topology & Component Design, 3. Failure Modes & Edge Cases).
      - `evaluationCriteria`: Explicit rubric benchmarks.
-     - `customPrompt`: Ready-to-copy review prompt template.
+     - `customPrompt`: Ready-to-copy, 100% self-contained review prompt generated via `generateMilestoneReviewPrompt` that can be pasted into ANY external AI chat (ChatGPT, Claude, Gemini, DeepSeek) without needing any prior curriculum context.
    - Verify that the milestone test is accessible via `/milestones/:id`, displayed in `Home.tsx` under the module card, and connected in `TopNav.tsx` and adjacent lesson navigation.
 
 ### Test UI Requirements
@@ -91,7 +90,7 @@ The milestone test page (`MilestoneTestPage.tsx`) must always provide:
 1. Architectural scenario & system constraints.
 2. Numbered practical deliverables.
 3. An interactive solution workspace (with auto-save to `localStorage`).
-4. A custom AI review prompt generator with one-click copy buttons (`Copy Review Prompt with My Solution` and `Copy Blank Prompt Template`).
+4. A custom AI review prompt generator with one-click copy buttons (`Copy Review Prompt with My Solution` and `Copy Blank Prompt Template`) that packages the entire scenario, scale figures, question deliverables, candidate solution, and evaluation rubric into a standalone, portable prompt.
 5. A clear evaluation rubric.
 
 ---

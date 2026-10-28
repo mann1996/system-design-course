@@ -294,8 +294,8 @@ export class UserProfileService {
         <LessonNavButtons currentLessonId="0003" />
 
         <AgentReminder
-          title="Ask Your Architect Tutor"
-          promptText='Have a question about cache consistency, write-behind buffers, or how to implement a Bloom Filter in TypeScript? Ask: "Hey tutor, how do I implement single-flight caching in my project?"'
+          title="Explore Further with AI"
+          promptText='Have a question about cache consistency, write-behind buffers, or how to implement a Bloom Filter in TypeScript? Ask an AI chat of your choice: "How do I implement single-flight caching in my project?"'
         />
       </div>
     </div>

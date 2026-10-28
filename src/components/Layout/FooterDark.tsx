@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { allLessons, allReferences } from '../../data/curriculum';
+import { allModules, allReferences } from '../../data/curriculum';
 
 export const FooterDark: React.FC = () => {
   return (
@@ -25,20 +25,32 @@ export const FooterDark: React.FC = () => {
             </p>
           </div>
 
-          <div className="footer-col">
+          <div className="footer-col footer-col-curriculum">
             <h5>Curriculum</h5>
-            <ul className="footer-links">
+            <ul className="footer-links footer-overview-links">
               <li>
-                <Link to="/">Course Overview</Link>
+                <Link to="/" className="footer-overview-link">
+                  Course Overview &rarr;
+                </Link>
               </li>
-              {allLessons.map((l) => (
-                <li key={l.id}>
-                  <Link to={`/lessons/${l.id}`}>
-                    {l.id}: {l.navTitle}
-                  </Link>
-                </li>
-              ))}
             </ul>
+            <div className="footer-modules-list">
+              {allModules.map((mod) => (
+                <div key={mod.id} className="footer-module-group">
+                  <div className="footer-module-title">{mod.badge}</div>
+                  <ul className="footer-links">
+                    {mod.lessons.map((l) => (
+                      <li key={l.id}>
+                        <Link to={`/lessons/${l.id}`}>
+                          <span className="footer-lesson-num">{l.id}</span>
+                          <span className="footer-lesson-title">{l.navTitle}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="footer-col">

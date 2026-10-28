@@ -244,7 +244,7 @@ export const Home: React.FC = () => {
 
         <AgentReminder
           title="Interactive Learning Mode"
-          promptText={`Every lesson and reference sheet includes direct access to your personal tutor. Ask in chat: "Hey tutor, let's review the trade-offs in Lesson 0001!"`}
+          promptText={`Every lesson and reference sheet includes guided prompts. Ask an AI chat of your choice: "Let's review the trade-offs in Lesson 0001!"`}
         />
       </main>
     </div>

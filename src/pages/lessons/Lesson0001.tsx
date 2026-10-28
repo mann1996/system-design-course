@@ -170,8 +170,8 @@ Peak QPS    ≈ Average QPS × 2 (to 5x depending on flash spikes)`}
         <LessonNavButtons currentLessonId="0001" />
 
         <AgentReminder
-          title="Your Personal Tutor is Standing By"
-          promptText={`Did anything in the calculation or the latency numbers feel surprising? Ask: "Hey tutor, let's calculate capacity for my next system!"`}
+          title="Explore Further with AI"
+          promptText={`Did anything in the calculation or the latency numbers feel surprising? Ask an AI chat of your choice: "Let's calculate capacity for my next system!"`}
         />
       </div>
     </div>

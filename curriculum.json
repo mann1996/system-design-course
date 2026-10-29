@@ -21,12 +21,12 @@
         {
           "id": "0002",
           "filename": "0002-horizontal-scaling-stateless-compute.html",
-          "title": "Scaling the Compute Layer: Horizontal Scaling & Statelessness",
-          "navTitle": "Horizontal Scaling & Stateless Compute",
+          "title": "Scaling the Compute Layer: Horizontal Scaling, Ingress & Resilience",
+          "navTitle": "Horizontal Scaling, Ingress & Resilience",
           "badge": "Lesson 0002",
-          "time": "15 mins",
-          "tag": "Cluster Sim",
-          "summary": "Overcome the Node.js single-thread bottleneck, avoid process memory traps, and externalize state to Redis."
+          "time": "25 mins",
+          "tag": "Ingress & Compute",
+          "summary": "Overcome the Node.js single-thread bottleneck, multi-tier L4/L7 ingress, immediate token revocation, cascading health check avoidance, and zero-downtime graceful shutdown."
         }
       ],
       "milestone": {

@@ -18,6 +18,8 @@ import { Lesson0015 } from './lessons/Lesson0015';
 import { Lesson0016 } from './lessons/Lesson0016';
 import { Lesson0017 } from './lessons/Lesson0017';
 import { Lesson0018 } from './lessons/Lesson0018';
+import { Lesson0019 } from './lessons/Lesson0019';
+import { Lesson0020 } from './lessons/Lesson0020';
 import { NotFound } from './NotFound';
 import { useLessonProgress } from '../context/LessonProgressContext';
 
@@ -41,6 +43,8 @@ function resolveCanonicalLessonId(rawId: string): string | null {
   if (clean === '0016' || clean === '16' || clean.startsWith('0016-')) return '0016';
   if (clean === '0017' || clean === '17' || clean.startsWith('0017-')) return '0017';
   if (clean === '0018' || clean === '18' || clean.startsWith('0018-')) return '0018';
+  if (clean === '0019' || clean === '19' || clean.startsWith('0019-')) return '0019';
+  if (clean === '0020' || clean === '20' || clean.startsWith('0020-')) return '0020';
   return null;
 }
 
@@ -80,6 +84,8 @@ export const LessonDispatcher: React.FC = () => {
   if (canonicalId === '0016') return <Lesson0016 />;
   if (canonicalId === '0017') return <Lesson0017 />;
   if (canonicalId === '0018') return <Lesson0018 />;
+  if (canonicalId === '0019') return <Lesson0019 />;
+  if (canonicalId === '0020') return <Lesson0020 />;
 
   return <NotFound />;
 };
